@@ -133,41 +133,35 @@ func (m *manager) updateNIC(ctx context.Context, nic *mgmtnetwork.Interface, lb 
 		m.log.Warnf("unable to update NIC as there are no IP configurations for %s", *nic.Name)
 		return false
 	}
+
 	sshID := fmt.Sprintf("%s/backendAddressPools/ssh-%d", *lb.ID, i)
 	ilbID := fmt.Sprintf("%s/backendAddressPools/%s", *lb.ID, infraID)
 
-	var updateSSHPool bool
-	var updateILBPool bool
+	updateSSHPool := true
+	updateILBPool := true
 
-	updateSSHPool = true
 	for _, p := range *(*nic.IPConfigurations)[0].LoadBalancerBackendAddressPools {
 		if strings.EqualFold(*p.ID, sshID) {
 			updateSSHPool = false
 		}
+		if strings.EqualFold(*p.ID, ilbID) {
+			updateILBPool = false
+		}
 	}
+
 	if updateSSHPool {
 		*(*nic.IPConfigurations)[0].LoadBalancerBackendAddressPools = append(*(*nic.IPConfigurations)[0].LoadBalancerBackendAddressPools, mgmtnetwork.BackendAddressPool{
 			ID: &sshID,
 		})
 	}
 
-	updateILBPool = true
-	for _, p := range *(*nic.IPConfigurations)[0].LoadBalancerBackendAddressPools {
-		if strings.EqualFold(*p.ID, ilbID) {
-			updateILBPool = false
-		}
-	}
 	if updateILBPool {
 		*(*nic.IPConfigurations)[0].LoadBalancerBackendAddressPools = append(*(*nic.IPConfigurations)[0].LoadBalancerBackendAddressPools, mgmtnetwork.BackendAddressPool{
 			ID: &ilbID,
 		})
 	}
 
-	if !updateSSHPool && !updateILBPool {
-		return false
-	} else {
-		return true
-	}
+	return updateSSHPool || updateILBPool
 }
 
 func (m *manager) updateLB(ctx context.Context, lb *mgmtnetwork.LoadBalancer) (changed bool) {
