@@ -78,7 +78,7 @@ func (m *manager) Install(ctx context.Context, installConfig *installconfig.Inst
 			steps.Action(m.updateConsoleBranding),
 			steps.Condition(m.operatorConsoleReady, 10*time.Minute),
 			steps.Condition(m.clusterVersionReady, 30*time.Minute),
-			steps.Condition(m.aroDeploymentReady, 10*time.Minute),
+			//steps.Condition(m.aroDeploymentReady, 10*time.Minute),
 			steps.Action(m.disableUpdates),
 			steps.Action(m.disableSamples),
 			steps.Action(m.disableOperatorHubSources),
