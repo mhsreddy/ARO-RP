@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -151,8 +150,10 @@ func (c *Cluster) Create(ctx context.Context, clusterName string) error {
 		"clusterServicePrincipalId": {Value: spID},
 		"fpServicePrincipalId":      {Value: fpSPID},
 		"fullDeploy":                {Value: c.ci},
-		"masterAddressPrefix":       {Value: fmt.Sprintf("10.%d.%d.0/24", rand.Intn(128), rand.Intn(256))},
-		"workerAddressPrefix":       {Value: fmt.Sprintf("10.%d.%d.0/24", rand.Intn(128), rand.Intn(256))},
+		// "masterAddressPrefix":       {Value: fmt.Sprintf("10.%d.%d.0/24", rand.Intn(128), rand.Intn(256))},
+		// "workerAddressPrefix":       {Value: fmt.Sprintf("10.%d.%d.0/24", rand.Intn(128), rand.Intn(256))},
+		"masterAddressPrefix": {Value: fmt.Sprintf("10.0.120.0/24")},
+		"workerAddressPrefix": {Value: fmt.Sprintf("10.0.121.0/24")},
 	}
 
 	armctx, cancel := context.WithTimeout(ctx, 10*time.Minute)

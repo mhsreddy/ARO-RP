@@ -33,8 +33,8 @@ func (c *Cluster) createApplication(ctx context.Context, displayName string) (st
 	password := uuid.NewV4().String()
 
 	app, err := c.applications.Create(ctx, mgmtgraphrbac.ApplicationCreateParameters{
-		DisplayName:    &displayName,
-		IdentifierUris: &[]string{"https://test.aro.azure.com/" + uuid.NewV4().String()},
+		DisplayName: &displayName,
+		//IdentifierUris: &[]string{"https://test.aro.azure.com/" + uuid.NewV4().String()},
 		PasswordCredentials: &[]mgmtgraphrbac.PasswordCredential{
 			{
 				EndDate: &date.Time{Time: time.Now().AddDate(1, 0, 0)},
